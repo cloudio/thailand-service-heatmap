@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thailand Service Support Heatmap</title>
+  <style>
+    /* Fill the full viewport */
+    html, body, #map {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Legend styling */
+    #legend {
+      background: #fff;
+      padding: 10px;
+      margin: 10px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    #legend h3 {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .color-box {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="legend">
+    <h3>Legend</h3>
+    <div class="legend-item"><span class="color-box" style="background:#FF0000"></span>Critical Priority</div>
+    <div class="legend-item"><span class="color-box" style="background:#FFA500"></span>High Priority</div>
+    <div class="legend-item"><span class="color-box" style="background:#FFD700"></span>Medium Priority</div>
+    <p style="margin-top:8px"><strong>Note:</strong> Marker size reflects device count. Areas marked "Single Person Risk" are served by only one DAS engineer.<br/>Target workload: <strong>≤ 50 devices per person</strong>.</p>
+  </div>
+
+  <script>
+    function initMap() {
+      const map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 13.7563, lng: 100.5018 }, // Bangkok
+        zoom: 6,
+      });
+
+      // Define marker data
+      const locations = [
+        // Critical (Red)
+        {
+          name: "Bangkok (กทม./กรุงเทพมหานคร)",
+          lat: 13.7563,
+          lng: 100.5018,
+          devices: 364,
+          supportScore: 231,
+          category: "critical",
+          staff: "DAS1, DAS2, DAS3, DAS4",
+          singlePerson: false,
+        },
+        {
+          name: "Songkhla (จ.สงขลา)",
+          lat: 7.1897,
+          lng: 100.5951,
+          devices: 25,
+          supportScore: 110,
+          category: "critical",
+          staff: "DAS2",
+          singlePerson: true,
+        },
+        // High (Orange)
+        {
+          name: "Chonburi (จ.ชลบุรี)",
+          lat: 13.3611,
+          lng: 100.9847,
+          devices: 26,
+          supportScore: 85,
+          category: "high",
+          staff: "DAS1 (mainly)",
+          singlePerson: false,
+        },
+        {
+          name: "Ayutthaya (จ.พระนครศรีอยุธยา)",
+          lat: 14.3532,
+          lng: 100.5689,
+          devices: 15,
+          supportScore: 85,
+          category: "high",
+          staff: "DAS4",
+          singlePerson: true,
+        },
+        {
+          name: "Surat Thani (จ.สุราษฎร์ธานี)",
+          lat: 9.1390,
+          lng: 99.3210,
+          devices: 16,
+          supportScore: 83,
+          category: "high",
+          staff: "DAS2",
+          singlePerson: true,
+        },
+        {
+          name: "Nong Khai (จ.หนองคาย)",
+          lat: 17.8791,
+          lng: 102.7410,
+          devices: 12,
+          supportScore: 71,
+          category: "high",
+          staff: "DAS4",
+          singlePerson: true,
+        },
+        {
+          name: "Ratchaburi (จ.ราชบุรี)",
+          lat: 13.5360,
+          lng: 99.8170,
+          devices: 10,
+          supportScore: 70,
+          category: "high",
+          staff: "DAS2",
+          singlePerson: true,
+        },
+        // Medium (Yellow)
+        {
+          name: "Nonthaburi (จ.นนทบุรี)",
+          lat: 13.8621,
+          lng: 100.5140,
+          devices: 78,
+          supportScore: 78,
+          category: "medium",
+          staff: "DAS1, DAS2, DAS3, DAS4",
+          singlePerson: false,
+        },
+        {
+          name: "Pathum Thani (จ.ปทุมธานี)",
+          lat: 14.0208,
+          lng: 100.5250,
+          devices: 29,
+          supportScore: 75,
+          category: "medium",
+          staff: "DAS1, DAS2, DAS3, DAS4",
+          singlePerson: false,
+        },
+        {
+          name: "Nakhon Pathom (จ.นครปฐม)",
+          lat: 13.8199,
+          lng: 100.0620,
+          devices: 22,
+          supportScore: 68,
+          category: "medium",
+          staff: "DAS1, DAS2, DAS3, DAS4",
+          singlePerson: false,
+        },
+        {
+          name: "Khon Kaen (จ.ขอนแก่น)",
+          lat: 16.4419,
+          lng: 102.8350,
+          devices: 10,
+          supportScore: 65,
+          category: "medium",
+          staff: "DAS4",
+          singlePerson: true,
+        },
+        {
+          name: "Ubon Ratchathani (จ.อุบลราชธานี)",
+          lat: 15.2447,
+          lng: 104.8478,
+          devices: 11,
+          supportScore: 63,
+          category: "medium",
+          staff: "DAS4",
+          singlePerson: true,
+        },
+        {
+          name: "Chiang Mai (จ.เชียงใหม่)",
+          lat: 18.7883,
+          lng: 98.9853,
+          devices: 21,
+          supportScore: 60,
+          category: "medium",
+          staff: "DAS1, DAS2, DAS3, DAS4",
+          singlePerson: false,
+        },
+        {
+          name: "Rayong (จ.ระยอง)",
+          lat: 12.6803,
+          lng: 101.2580,
+          devices: 16,
+          supportScore: 60,
+          category: "medium",
+          staff: "DAS1, DAS2, DAS3, DAS4",
+          singlePerson: false,
+        },
+        {
+          name: "Samut Prakan (จ.สมุทรปราการ)",
+          lat: 13.5991,
+          lng: 100.5967,
+          devices: 18,
+          supportScore: 58,
+          category: "medium",
+          staff: "DAS1, DAS2, DAS3, DAS4",
+          singlePerson: false,
+        },
+        {
+          name: "Nakhon Ratchasima (จ.นครราชสีมา)",
+          lat: 14.9799,
+          lng: 102.0977,
+          devices: 20,
+          supportScore: 55,
+          category: "medium",
+          staff: "DAS1, DAS2, DAS3, DAS4",
+          singlePerson: false,
+        },
+        {
+          name: "Chiang Rai (จ.เชียงราย)",
+          lat: 19.9105,
+          lng: 99.8405,
+          devices: 8,
+          supportScore: 55,
+          category: "medium",
+          staff: "DAS1, DAS2, DAS3, DAS4",
+          singlePerson: false,
+        },
+        {
+          name: "Phuket (จ.ภูเก็ต)",
+          lat: 7.8804,
+          lng: 98.3923,
+          devices: 14,
+          supportScore: 52,
+          category: "medium",
+          staff: "DAS1, DAS2, DAS3, DAS4",
+          singlePerson: false,
+        },
+      ];
+
+      const categoryColors = {
+        critical: "#FF0000",
+        high: "#FFA500",
+        medium: "#FFD700",
+      };
+
+      const infoWindow = new google.maps.InfoWindow();
+
+      locations.forEach((loc) => {
+        const size = Math.max(8, loc.devices / 8); // scale marker size to devices
+        const marker = new google.maps.Marker({
+          position: { lat: loc.lat, lng: loc.lng },
+          map,
+          title: `${loc.name} – ${loc.devices} devices`,
+          label: {
+            text: loc.devices.toString(),
+            color: "#000",
+            fontSize: "10px",
+            fontWeight: "bold",
+          },
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: categoryColors[loc.category],
+            fillOpacity: 0.8,
+            strokeColor: "#000",
+            strokeWeight: 1,
+            scale: size,
+          },
+        });
+
+        marker.addListener("click", () => {
+          const riskText = loc.singlePerson ? "<strong>RISK:</strong> SINGLE PERSON COVERAGE" : "";
+          const content = `
+            <div style="font-family:Arial,sans-serif;font-size:14px;min-width:200px">
+              <h3 style="margin-top:0">${loc.name}</h3>
+              <p><strong>Total Devices:</strong> ${loc.devices}</p>
+              <p><strong>Assigned Staff:</strong> ${loc.staff}</p>
+              <p><strong>Support Score:</strong> ${loc.supportScore} <em>(higher value = greater urgency)</em></p>
+              ${riskText ? `<p style="color:red">${riskText}</p>` : ""}
+            </div>
+          `;
+          infoWindow.setContent(content);
+          infoWindow.open(map, marker);
+        });
+      });
+
+      // Add legend to map controls
+      map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById("legend"));
+    }
+  </script>
+  <!-- Replace YOUR_GOOGLE_MAPS_API_KEY with a valid API key -->
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCav2a02WgpP3nkcC2HsuM8JQbvJH20wg&callback=initMap">
+  </script>
+</body>
+</html> 
