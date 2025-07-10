@@ -64,7 +64,7 @@ const ThailandMapContent = dynamic(
         })
     }, [])
 
-    const onEachFeature = (feature: ProvinceFeature, layer: any) => {
+    const onEachFeature = (feature: any, layer: any) => {
       layer.on({
         mouseover: (e: any) => {
           const layer = e.target
@@ -104,7 +104,17 @@ const ThailandMapContent = dynamic(
                                      '#FFEDA0'
     }
 
-    const style = (feature: ProvinceFeature) => {
+    const style = (feature?: any) => {
+      if (!feature?.properties?.population) {
+        return {
+          fillColor: '#FFEDA0',
+          weight: 2,
+          opacity: 1,
+          color: 'white',
+          dashArray: '3',
+          fillOpacity: 0.5
+        }
+      }
       return {
         fillColor: getColor(feature.properties.population),
         weight: 2,
